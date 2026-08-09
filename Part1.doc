@@ -1,0 +1,66 @@
+Part 1: Node Internals
+
+1. What is the Node.js Event Loop?
+The Event Loop is the mechanism that allows Node.js to handle asynchronous operations without blocking the main thread.
+It continuously checks if there are tasks that are ready to be executed and sends their callbacks to the Call Stack when the stack is empty.
+
+2. What is Libuv and What Role Does It Play in Node.js?
+Libuv is a library used by Node.js to handle asynchronous and non-blocking operations.
+It provides the Event Loop and helps Node.js handle operations such as:
+File system operations
+Networking
+Timers
+Other asynchronous tasks
+
+
+3. How Does Node.js Handle Asynchronous Operations Under the Hood?
+When Node.js starts an asynchronous operation, it does not wait for it to finish.
+Instead:
+
+Node.js sends the operation to the appropriate system or Libuv.
+Node.js continues executing other JavaScript code.
+When the operation finishes, its callback is placed in a queue.
+The Event Loop checks the queue.
+When the Call Stack is empty, the callback is executed.
+This allows Node.js to handle multiple operations efficiently.
+
+
+
+4. What is the Difference Between the Call Stack, Event Queue, and Event Loop?
+Call Stack
+The Call Stack keeps track of the JavaScript functions currently being executed.
+Event Queue
+The Event Queue stores callbacks that are ready to run after their asynchronous operations finish.
+Event Loop
+The Event Loop continuously checks the Call Stack and Event Queue. When the Call Stack is empty, it moves a waiting callback from the queue to the Call Stack.
+
+
+
+
+5. What is the Node.js Thread Pool and How to Set the Thread Pool Size?
+The Node.js Thread Pool is a group of threads provided by Libuv that can handle certain operations in the background, such as some file system and other expensive operations.
+The default thread pool size is 4 threads.
+We can change its size using the UV_THREADPOOL_SIZE environment variable.
+Example:
+
+UV_THREADPOOL_SIZE=8 node server.js
+This sets the thread pool size to 8.
+
+
+
+6. How Does Node.js Handle Blocking and Non-Blocking Code Execution?
+Blocking Code
+Blocking code makes Node.js wait until the operation finishes before continuing.
+Example:
+
+fs.readFileSync("users.json");
+Non-Blocking Code
+Non-blocking code starts the operation and allows Node.js to continue executing other code while waiting for the operation to finish.
+
+Example:
+
+fs.readFile("users.json", (err, data) => {
+    console.log(data);
+});
+
+Node.js generally uses non-blocking operations so the main thread can continue handling other requests.
